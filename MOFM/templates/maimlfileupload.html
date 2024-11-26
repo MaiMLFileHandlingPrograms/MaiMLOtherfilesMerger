@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+            <span class="navbar-brand mb-0 h1">Please select MaiML file, then click the 'Go to insert data files' button.</span>
+        </nav>
+    </div>
+    <br/>
+    <form enctype="multipart/form-data" action="{% url 'insertdataapp:maimlfileupload' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    {{ form.description }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">MaiML File</label>
+                <div class="col-sm-10">
+                    {{ form.upload_maiml }}
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div>
+                <button type="submit" class="btn btn-dark" name="goinsertdata">Go to insert data files</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %} 

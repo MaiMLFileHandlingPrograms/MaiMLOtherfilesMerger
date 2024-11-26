@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block content %}
+{% bootstrap_javascript %}
+    <div class="container">
+        <div class="row">
+            <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+                <div class="col">
+                    <span class="navbar-brand mb-0 h1">If you want to upload new data, Go to "FILE UPLOAD"</span>
+                    <!-- <i class="bi bi-forward"></i> -->
+                </div>
+            </nav>
+            <div><br /></div>
+            <div class="text-center">
+                <h5><a class="btn btn-dark" href="{% url 'insertdataapp:maimlfileupload' %}" role="button">FILE UPLOAD</a></h5>
+            </div>
+        </div>
+        <br/><br/><br/>
+        <div class="row">
+            <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+                <div class="col">
+                    <span class="navbar-brand mb-0 h1">UPLOADED DATA</span>
+                </div>
+            </nav>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <!-- th scope="col">#</th -->
+                    <th scope="col">Using this file</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">MaiML File</th>
+                    <th scope="col">File Registered Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--
+                {% for file in file_list %}
+                <div>
+                    <h3>UUID: {{ file.uuid }}</h3>
+                    <p>MAIML File: {{ file.maimlfile }}</p>
+                    
+                    {% if file.otherfile %}
+                      <ul>
+                        {% for other_file in file.otherfile %}
+                          <li>{{ other_file.name }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p>No associated other files.</p>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+                -->
+                {% for file in file_list %}
+                    {% if file.maimlfile.upload_maiml.name|slice:":5" == "input" %}
+                        <tr>
+                            <th>
+                                <form action="{%url 'insertdataapp:fromidupload' file.maimlfile.upload_maiml_id %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-dark  bi bi-arrow-right" button_type="submit" />
+                                </form>
+                            </th>
+                            <th>
+                                {{ file.maimlfile.description }}
+                                </th>
+                            <th>
+                                {% if file.maimlfile.upload_maiml.name|slice:"47:52" == "MaiML" %}
+                                    <a href="{{ file.maimlfile.upload_maiml.url }}">{{ file.maimlfile.upload_maiml.name|slice:"53:" }}</a>
+                                {% endif %}
+                            </th>
+                            <th>{{ file.maimlfile.register_at }}</th>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br/><br />
+
+        <div class="row">
+            <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+                <div class="col">
+                    <span class="navbar-brand mb-0 h1">DOWNLOADABLE DATA</span>
+                </div>
+            </nav>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <!-- th scope="col">#</th -->
+                    <th scope="col">ZIP Download</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">MaiML File</th>
+                    <th scope="col">OTHER Files</th>
+                    <th scope="col">File Updated Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in file_list %}
+                    {% if file.maimlfile.upload_maiml.name|slice:":6" == "output" %}
+                        <tr>
+                            <th>
+                                <form action="{%url 'insertdataapp:zipdownload' file.uuid %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-dark bi bi-file-earmark-arrow-down" button_type="submit" />
+                                </form>
+                            </th>
+                            <th>{{ file.maimlfile.description }}</th>
+                            <th>
+                                {% if file.maimlfile.upload_maiml.name|slice:"48:53" == "MaiML" %}
+                                <a href="{{ file.maimlfile.upload_maiml.url }}">{{ file.maimlfile.upload_maiml.name|slice:"54:" }}</a>
+                                {% endif %}
+                            </th>
+                            <th>
+                                {% if file.otherfiles %}
+                                    {% for other_file in file.otherfiles %}
+                                        <a href="{{ other_file.file.url }}">{{ other_file.filename }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                  <p>No associated other files.</p>
+                                {% endif %}
+                            </th>
+                            <th>{{ file.maimlfile.register_at }}</th>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

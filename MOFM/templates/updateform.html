@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static './css/maiml_style.css' %}" type="text/css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="{% static './js/maiml_dict.js' %}"></script>
+<div class="container">
+    <div class="row">
+        <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+            <span class="navbar-brand mb-0 h1">Edit/Add the necessary data.</span>
+        </nav>
+    </div>
+
+    <form id="updateForm" class="" action="{% url 'insertdataapp:updateform' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.upload_maiml_id.as_hidden }}
+        
+        <div class="row">
+            <div>
+                <p hidden>{{form.maiml_dict}}</p>
+            </div>
+            <div>
+                <div hidden class="divclass" >
+                    <div id="documentvalue" class="div1class" ></div>
+                </div>
+                <div hidden class="divclass" >
+                    <div id="protocolvalue" class="div1class" ></div>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs" role="tablist">
+                <!--
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link " data-bs-toggle="tab" href="#document" aria-selected="true" role="tab"
+                        tabindex="-1">&lt;document&gt;</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link disabled" data-bs-toggle="tab" href="#protocol" aria-selected="false" 
+                        role="tab">&lt;protocol&gt;</a>
+                </li>
+                -->
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="tab" href="#data" aria-selected="true" tabindex="-1" 
+                        role="tab">&lt;data&gt;</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link " data-bs-toggle="tab" href="#eventlog" aria-selected="false" tabindex="-1"
+                        role="tab">&lt;eventLog&gt;</a>
+                </li>
+            
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <!-- 
+                <div class="tab-pane fade" id="document" role="tabpanel">
+                    <div hidden class="divclass">
+                        <div id="documentvalue" class="div1class"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="protocol" role="tabpanel">
+                    <div hidden class="divclass">
+                        <div id="protocolvalue" class="div1class"></div>
+                    </div>
+                </div>
+                -->
+                <div class="tab-pane fade" id="data" role="tabpanel">
+                    <div class="divclass">
+                        <div id="datavalue" class="div1class"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="eventlog" role="tabpanel">
+                    <div class="divclass">
+                        <div id="eventLogvalue" class="div1class"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div>
+            <input type="button" id="maiml_update_btn" value="Update" class="btn btn-dark"></input>
+        </div>
+
+    </form>
+    <br/><br /><br /><br />
+</div>
+{% endblock %} 

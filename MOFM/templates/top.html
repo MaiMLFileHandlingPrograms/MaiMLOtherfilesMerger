@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block content %}
+{% bootstrap_javascript %}
+<div>
+    <div class="text-center">
+        <nav class="navbar navbar-light" style="background-color: #d1e4e6;">
+            <div class="col">
+                <span class="navbar-brand mb-0 h1">MAIN MENU</span>
+            </div>
+        </nav>
+    </div>
+    <br/>
+    <div class="text-center" >
+        <!--<button class="btn btn-lg btn-primary" style="width: 30em;" type="button" onclick="location.href='merger/list/'">FILE LIST</button><br/><br />-->
+        <!--<button class="btn btn-lg btn-primary" style="width: 30em;" type="button" onclick="location.href='merger/upload/'">TIFF MERGER</button><br /><br />-->
+        <button class="btn btn-lg btn-primary" style="width: 30em;" type="button" onclick="location.href='instool/upload/'">DATA INSERTION TOOL</button><br /><br />
+        <!--<button class="btn btn-lg btn-primary" style="width: 30em;" type="button" onclick="location.href='newmaiml/'">NEW MAIML</button><br /><br />-->
+    </div>
+</div>
+{% endblock %}
