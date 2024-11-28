@@ -114,7 +114,7 @@
                             <th>
                                 {% if file.otherfiles %}
                                     {% for other_file in file.otherfiles %}
-                                        <a href="{{ other_file.file.url }}">{{ other_file.filename }}</a>
+                                        <a href="{{ other_file.file.url }}">{{ other_file.filename }}</a></br>
                                     {% endfor %}
                                 {% else %}
                                   <p>No associated other files.</p>
