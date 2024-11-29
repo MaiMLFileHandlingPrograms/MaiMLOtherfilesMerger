@@ -366,7 +366,7 @@ class UpdateMaiML():
         ## 1. protocolからtemplateを取得
         templatelist = []
         protocoldict = maimldict[maimlelement.maiml][maimlelement.protocol]
-                
+        
         if maimlelement.materialTemplate in protocoldict:
             templatelist.append(protocoldict[maimlelement.materialTemplate])
         if maimlelement.conditionTemplate in protocoldict:
@@ -390,16 +390,15 @@ class UpdateMaiML():
             for pnmldict in pnmllist:
                 arclist.extend(pnmldict[maimlelement.arc] if isinstance(pnmldict[maimlelement.arc],list) else [pnmldict[maimlelement.arc]])
             ## 4. programからinstruction,templateを取得
-            prorgamlist = methoddict[maimlelement.program] if isinstance(methoddict[maimlelement.program],list) else [methoddict[maimlelement.program]]
-            for programdict in prorgamlist:
+            progamlist = methoddict[maimlelement.program] if isinstance(methoddict[maimlelement.program],list) else [methoddict[maimlelement.program]]
+            for programdict in progamlist:
                 if maimlelement.materialTemplate in programdict:
-                    templatelist.append(programdict[maimlelement.materialTemplate])
+                    templatelist.extend(programdict[maimlelement.materialTemplate] if isinstance(programdict[maimlelement.materialTemplate],list) else [programdict[maimlelement.materialTemplate]])
                 if maimlelement.conditionTemplate in programdict:
-                    templatelist.append(programdict[maimlelement.conditionTemplate])
+                    templatelist.extend(programdict[maimlelement.conditionTemplate] if isinstance(programdict[maimlelement.conditionTemplate],list) else [programdict[maimlelement.conditionTemplate]])
                 if maimlelement.resultTemplate in programdict:
-                    templatelist.append(programdict[maimlelement.resultTemplate])
-                instructionlist = []
-                instructionlist.extend(programdict[maimlelement.instruction] if isinstance(programdict[maimlelement.instruction],list) else [programdict[maimlelement.instruction]])
+                    templatelist.extend(programdict[maimlelement.resultTemplate] if isinstance(programdict[maimlelement.resultTemplate],list) else [programdict[maimlelement.resultTemplate]])
+                instructionlist = programdict[maimlelement.instruction] if isinstance(programdict[maimlelement.instruction],list) else [programdict[maimlelement.instruction]]
                 for inst in instructionlist:
                     instructionIDlist.append({'instructionID':inst[maimlelement.idd], 'transitionID':inst[maimlelement.transitionRef][maimlelement.refd]})
         ## 5. templatelistからplaceRefを取得
@@ -418,7 +417,7 @@ class UpdateMaiML():
             postinstructionIDlist = []
             for placeRef in placeReflsit:
                 placeID = placeRef[maimlelement.refd]
-                placeIDlist += placeID
+                placeIDlist.extend(placeID)
                 for arc in arclist:
                     pretransitionID = ''
                     posttransitionID = ''
@@ -462,8 +461,8 @@ class UpdateMaiML():
             tz = ZoneInfo(key=settings.TIME_ZONE)
             datetime = DT(int(date[0]),int(date[1]),int(date[2]),int(time[0]),int(time[1]),int(time[2]),tzinfo=tz)
             f_datetime = datetime.isoformat()
-
         if f_datetime and not instanceID:
+            print("bbbbb")
             ## 全event要素に計測時間を追加
             log_list = full_dict[maimlelement.maiml][maimlelement.eventlog][maimlelement.log]
             log_list = log_list if isinstance(log_list, list) else [log_list]
@@ -479,8 +478,10 @@ class UpdateMaiML():
                                 pass
             #print('eventlog::::::::::::::::::::',full_dict[maimlelement.maiml][maimlelement.eventlog])
         elif f_datetime and instanceID:
+            print("ccccccc")
             # instanceIDからtemplateIDを切り出し、templateが含まれるinstructionを取り出す
             relationlist = self.createRelationData(full_dict)
+            print("cccccccc-1")
             template_id = instanceID[:-9] if instanceID.endswith('_instance') else instanceID
             instructionIDlist = ''
             for relation in relationlist:
@@ -505,7 +506,7 @@ class UpdateMaiML():
                                         pass
                             else:
                                 pass
-
+        print("dddddddddd")
         ##　TiffのメタデータをinstanceIDを持つmaterial or condition or resultの汎用データに追加
         if instanceID:
             instance_list = []
@@ -626,7 +627,7 @@ class UpdateMaiML():
                     #print('instance_dict::::::::',instance_dict)
         return full_dict
 
-
+    print("eeeeeeeee")
     ## instanceのコンテンツに外部ファイルのinsertionコンテンツを追加
     def addinsertion(self, full_data_dict, fileData, other_filename, instanceID=''):
         #otherfile_out_dirname, other_filename = os.path.split(other_file_path)
