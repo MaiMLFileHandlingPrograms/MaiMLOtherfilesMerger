@@ -20,58 +20,29 @@ class MaimlUtilforPNML():
 
     @classmethod
     def gettemplateidlist(self, parentList):
-        midlist = []
+        midlist = [] # [placerefd,]
         cidlist = []
         ridlist = []
-        if isinstance(parentList,list):
-            pass
-        else:
-            parentList = [parentList]
         for parentdict in parentList:
             if maimlelement.materialTemplate in parentdict.keys():
                 # place --allM
-                mtlist = parentdict[maimlelement.materialTemplate]
-                if isinstance(mtlist,list):
-                    pass
-                else:
-                    mtlist = [mtlist]
+                mtlist = parentdict[maimlelement.materialTemplate] if isinstance(parentdict[maimlelement.materialTemplate],list) else [parentdict[maimlelement.materialTemplate]]
                 for mtdict in mtlist:
-                    mtdictref = mtdict[maimlelement.placeRef]
-                    if isinstance(mtdictref,list):
-                        pass
-                    else:
-                        mtdictref = [mtdictref]
+                    mtdictref = mtdict[maimlelement.placeRef] if isinstance(mtdict[maimlelement.placeRef],list) else [mtdict[maimlelement.placeRef]]
                     for mplace in mtdictref:
                         midlist.append(str(mplace[maimlelement.refd]))
             if maimlelement.conditionTemplate in parentdict.keys():
-                ctlist = parentdict[maimlelement.conditionTemplate]
-                if isinstance(ctlist,list):
-                    pass
-                else:
-                    ctlist = [ctlist]
+                ctlist = parentdict[maimlelement.conditionTemplate] if isinstance(parentdict[maimlelement.conditionTemplate],list) else [parentdict[maimlelement.conditionTemplate]] 
                 for ctdict in ctlist:
-                    ctdictref = ctdict[maimlelement.placeRef]
-                    if isinstance(ctdictref,list):
-                        pass
-                    else:
-                        ctdictref = [ctdictref]
+                    ctdictref = ctdict[maimlelement.placeRef] if isinstance(ctdict[maimlelement.placeRef],list) else [ctdict[maimlelement.placeRef]]
                     for cplace in ctdictref:
                         cidlist.append(str(cplace[maimlelement.refd]))
             if maimlelement.resultTemplate in parentdict.keys():
-                rtlist = parentdict[maimlelement.resultTemplate]
-                if isinstance(rtlist,list):
-                    pass
-                else:
-                    rtlist = [rtlist]
+                rtlist = parentdict[maimlelement.resultTemplate] if isinstance(parentdict[maimlelement.resultTemplate],list) else [parentdict[maimlelement.resultTemplate]]
                 for rtdict in rtlist:
-                    rtdictref = rtdict[maimlelement.placeRef]
-                    if isinstance(rtdictref,list):
-                        pass
-                    else:
-                        rtdictref = [rtdictref]
+                    rtdictref = rtdict[maimlelement.placeRef] if isinstance(rtdict[maimlelement.placeRef],list) else [rtdict[maimlelement.placeRef]]
                     for rplace in rtdictref:
                         ridlist.append(str(rplace[maimlelement.refd]))
-
         return midlist, cidlist, ridlist
 
     def makepnmlgraphdata(cls, maimldict):
@@ -86,36 +57,26 @@ class MaimlUtilforPNML():
         midlist = []
         cidlist = []
         ridlist = []
-
-        program_list = maimldict[maimlelement.maiml][maimlelement.protocol][maimlelement.method][maimlelement.program]
-        if isinstance(program_list,list):
-            pass
-        else:
-            program_list = [program_list]
-        pr_midlist, pr_cidlist, pr_ridlist = cls.gettemplateidlist(program_list)
-        midlist += pr_midlist
-        cidlist += pr_cidlist
-        ridlist += pr_ridlist
-
-        method_list = maimldict[maimlelement.maiml][maimlelement.protocol][maimlelement.method]
-        if isinstance(method_list,list):
-            pass
-        else:
-            method_list = [method_list]
-        mt_midlist, mt_cidlist, mt_ridlist = cls.gettemplateidlist(method_list)
-        midlist += mt_midlist
-        cidlist += mt_cidlist
-        ridlist += mt_ridlist
-
-        protocol_list = maimldict[maimlelement.maiml][maimlelement.protocol]
-        if isinstance(protocol_list,list):
-            pass
-        else:
-            protocol_list = [protocol_list]
+        ## protocol-template
+        protocol_list = [maimldict[maimlelement.maiml][maimlelement.protocol]] #protocol=1
         pt_midlist, pt_cidlist, pt_ridlist = cls.gettemplateidlist(protocol_list)
         midlist += pt_midlist
         cidlist += pt_cidlist
         ridlist += pt_ridlist
+        ## method-template
+        method_list = maimldict[maimlelement.maiml][maimlelement.protocol][maimlelement.method]
+        method_list = method_list if isinstance(method_list,list) else [method_list]
+        mt_midlist, mt_cidlist, mt_ridlist = cls.gettemplateidlist(method_list)
+        midlist += mt_midlist
+        cidlist += mt_cidlist
+        ridlist += mt_ridlist
+        ## program-template
+        for method_dict in method_list:
+            program_list = method_dict[maimlelement.program] if isinstance(method_dict[maimlelement.program],list) else [method_dict[maimlelement.program]]
+            pr_midlist, pr_cidlist, pr_ridlist = cls.gettemplateidlist(program_list)
+            midlist += pr_midlist
+            cidlist += pr_cidlist
+            ridlist += pr_ridlist
 
         #print('midlist::::::::::::',midlist)
         #print('cidlist::::::::::::',cidlist)
@@ -137,14 +98,13 @@ class MaimlUtilforPNML():
                 #print('[R] place_dict[maimlelement.idd]::::::::::',place_dict[maimlelement.idd])
 
             petrinetdata.append({"data": {"id": str(place_dict[maimlelement.idd]), "maiml_type":maiml_type}})
-        # transition
-        if isinstance(transition_list, list):
-            pass
-        else:
-            transition_list = [transition_list]
+            #petrinetdata.append({"data": {"id": str(place_dict[maimlelement.idd]), "maiml_type":maiml_type, "label":'',}})
+        
+        ## transition
+        transition_list = transition_list if isinstance(transition_list, list) else [transition_list]
         for transition_dict in transition_list:
             petrinetdata.append({"data": {"id": str(transition_dict[maimlelement.idd]), "maiml_type":"T"}})
-        # arc
+        ## arc
         if isinstance(pnml_dict[maimlelement.arc], list):
             arc_list = copy.deepcopy(pnml_dict[maimlelement.arc])
         else:
@@ -153,7 +113,7 @@ class MaimlUtilforPNML():
             petrinetdata.append({"data": {"id": str(arc_dict[maimlelement.idd]), "source": str(arc_dict[maimlelement.sourced]), "target": str(arc_dict[maimlelement.targetd]), "nodeType":"transition",}})
         
         #print(petrinetdata)
-
+        '''
         petrinetdata2 = [
                 # node(place,transition)
                 {"data": {"id": "M1id", "maiml_type": "M"},},
@@ -164,6 +124,6 @@ class MaimlUtilforPNML():
                 {"data": {"id": "arc1id", "source": "M1id", "target": "T1id", "nodeType":"transition", "label": "M1 - T1"},},
                 {"data": {"id": "arc2id", "source": "C1id", "target": "T1id", "nodeType":"transition", "label": "C1 - T1"},},
                 {"data": {"id": "arc3id", "source": "T1id", "target": "R1id", "nodeType":"transition", "label": "C - D"},},
-        ]
+        ]'''
         return petrinetdata
     
