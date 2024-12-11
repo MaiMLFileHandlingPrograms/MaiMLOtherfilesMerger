@@ -110,6 +110,7 @@ var style = [
 function addpositiontodata(){
     //console.log(petridata)
     var form = document.getElementById('id_petri_data')
+    petridata = JSON.parse(form.value)
     for (let i = 0; i < petridata.length; i++) {
         //console.log(petridata[i])
         if (petridata[i].data.hasOwnProperty('maiml_type')){
@@ -137,7 +138,7 @@ window.onload = function drawpetrinetd() {
         style: style,
         layout: layoutConfig,
     });
-
+    window.cy = cy;
     
     // 描画
     cy.ready(function () {
@@ -158,8 +159,8 @@ window.onload = function drawpetrinetd() {
 
 
 $(function () {
-    $('#tiff_update_btn').click(function () {
+    $('#files_update_btn').click(function () {
         addpositiontodata();
-        $('#fromidupload').submit();
+        $('#toinsertdata').submit();
     });
 })
