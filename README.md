@@ -1,1 +1,1 @@
-# MaiMLOtherfilesMerger
+# MaiMLOtherfilesMerger READMEで使用するImage保存用レポジトリ
