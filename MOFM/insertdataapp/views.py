@@ -57,21 +57,34 @@ class ListDL():
     
     ## ZIP DOWNLOAD
     def download_zip(request, upload_maiml_id):
-        docment_obj = get_object_or_404(Document, pk=upload_maiml_id)
+        document_obj = get_object_or_404(Document, pk=upload_maiml_id)
         other_file_list = OtherFiles.objects.filter(upload_maiml_id=upload_maiml_id,commit_flag=True)
 
         ## zip URI（ディレクトリ構成）を手に入れる
         ## zipを作ってresponseで返す
         response = HttpResponse(content_type='application/zip')
         file_zip = zipfile.ZipFile(response, 'w')
-        maiml_dirname, maiml_filename = os.path.split(docment_obj.upload_maiml.name)
-        file_zip.writestr(maiml_filename, docment_obj.upload_maiml.file.read())
-        for other_file in other_file_list:
-            other_filename = other_file.filename
-            file_zip.writestr(other_filename, other_file.file.read())
-        # Content-Dispositionでダウンロードの強制
-        response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(maiml_filename)
+        
+        # ZIPファイルをメモリ上で作成するためにBytesIOを使う
+        zip_buffer = io.BytesIO()
 
+        # zipfile.ZipFileを使用して、メモリ内のバッファに書き込み
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            # メインのドキュメントファイルを書き込む
+            maiml_filename = os.path.basename(document_obj.upload_maiml.name)
+            zip_file.writestr(maiml_filename, document_obj.upload_maiml.file.read())
+
+            # その他のファイルを書き込む
+            for other_file in other_file_list:
+                other_filename = other_file.filename
+                zip_file.writestr(other_filename, other_file.file.read())
+
+        # バッファの位置を先頭に戻す
+        zip_buffer.seek(0)
+
+        # ZIPファイルをレスポンスとして返す
+        response = HttpResponse(zip_buffer.read(), content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{maiml_filename}.zip"'
         return response
 
 ###############################################
