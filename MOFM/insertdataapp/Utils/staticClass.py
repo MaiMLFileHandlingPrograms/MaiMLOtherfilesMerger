@@ -48,7 +48,8 @@ class maimlelement():
     annotation = 'annotation'
     property = 'property'
     content = 'content'
-    generalTagList = ['property', 'content']
+    uncertainty = 'uncertainty'
+    generalTagList = ['property', 'content', 'uncertainty']
     value = 'value'  ## >=0
     templateRef = 'templateRef'      ## >=0
     instanceRef = 'instanceRef'    # >=0  参照要素
